@@ -7,84 +7,71 @@
 
 #define MAX_LINE 300
 
-void mem_handler (char **lines, int *max_number_of_lines, int line_num)
+void mem_handler (LI ***lines, int max_number_of_lines, int line_num)
 {
-    if (line_num == *max_number_of_lines)
+    if (line_num == max_number_of_lines)
     {
-        lines = (char **) realloc(lines, *max_number_of_lines * 2);
-        *max_number_of_lines *= 2;
+        lines = (LI ***) realloc(lines, max_number_of_lines * 2);
+        max_number_of_lines *= 2;
     }
-    else if (line_num < *max_number_of_lines)
+    else if (line_num < max_number_of_lines)
     {
-        lines = (char **) realloc(lines, line_num);
+        lines = (LI ***) realloc(lines, line_num);
     }
 }
 
-int read (char **lines, int *buffer, int text_size, int max_number_of_lines)
+int read (LI ***lines, int **buffer, int text_size, int max_number_of_lines)
 {
     int  buf_char = 0;
     int  line_num = 0;
     char curr_line[MAX_LINE] = {};
     int  curr_line_char = 0;
 
-    assert(buffer);
-    assert(lines);
+    assert(*buffer);
+    assert(*lines);
     assert(text_size);
 
-    for (buf_char = 0; buf_char < text_size; ++buf_char)
+    for (buf_char = 0; buf_char < text_size; ++buf_char, ++curr_line_char)
     {
-        curr_line[curr_line_char] = buffer[buf_char];
+        curr_line[curr_line_char] = (*buffer)[buf_char];
 
-        if (buffer[buf_char] == '\n' || buffer[buf_char] == '\0')
+        if ((*buffer)[buf_char] == '\n' || (*buffer)[buf_char] == '\0')
         {
             curr_line[curr_line_char] = '\n';
 
-            lines[line_num] = (char *) calloc(curr_line_char, sizeof(char));
-            strncpy(lines[line_num], curr_line, curr_line_char);
+            printf("%s\n", curr_line);
+
+            (**lines)[line_num]       = (LI *)   calloc(curr_line_char,     sizeof(LI));
+            (**lines)[line_num]->text = (char *) calloc(curr_line_char + 1, sizeof(char));
+
+            assert((*lines)[line_num]);
+            assert(((*lines)[line_num]->text))
+
+            (*lines)[line_num]->number = line_num;
+            (*lines)[line_num]->lenth = curr_line_char;
+            printf("lenth: %i\n", (*lines)[line_num]->lenth);
+            strncpy((*lines)[line_num]->text, curr_line, curr_line_char);
+            printf("%s\n", (*lines[line_num])->text);
+
             line_num++;
             
             for (curr_line_char = 0; curr_line_char < MAX_LINE; ++curr_line_char)
                 curr_line[curr_line_char] = 0;
 
-            curr_line_char = 0;
+            curr_line_char = -1;
 
-            mem_handler(lines, &max_number_of_lines, line_num);
+            mem_handler(lines, max_number_of_lines, line_num);
         }
     }
 
-    mem_handler(lines, &max_number_of_lines, line_num);
+    mem_handler(lines, max_number_of_lines, line_num);
 
-    assert(lines);
+    assert((*lines));
 
-    free(buffer);
+    free(*buffer);
 
     return line_num;
 }
-
-// void read (int **lines, int line_num)
-// {
-//     int ch       = 0;
-//     int i        = 0;
-//     int j        = 0;
-//     FILE *onegin = fopen(FILE_NAME, "r");
-
-//     assert(onegin);
-
-//     for (ch = getc(onegin), i = 0; i < line_num; ++i)
-//     {
-//         for (j = 0; ch != EOF && ch != '\n' && ch != '\0' && j < MAX_LINE; ++j)
-//         {
-//             lines[i][j] = ch;
-//             ch = getc(onegin);
-//         }
-
-//         lines[i][j] = '\n';
-//         ch = getc(onegin);
-//     }
-
-//     lines[i - 1][j - 1] = EOF;
-//     fclose(onegin);
-// }
 
 void print (char **lines, int *number, int line_num)
 {
@@ -109,20 +96,3 @@ void print (char **lines, int *number, int line_num)
     }
     printf("\n=====================================\n");
 }
-
-// int lines_counter ()
-// {
-//     FILE *onegin  = fopen(FILE_NAME, "r");
-//     int  ch       = 0;
-//     int  line_num = 0;
-
-//     for (ch = fgetc(onegin); ch != EOF; ch = fgetc(onegin))
-//         if (ch == '\n')
-//             line_num++;
-    
-//     line_num++;
-
-//     fclose(onegin);
-
-//     return line_num;
-// }
