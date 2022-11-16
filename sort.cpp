@@ -3,111 +3,106 @@
 
 #include "Onegin.h"
 
-int *cpy( int *dest, const int *src, unsigned long count )
+int cmp_end (LI *l1, LI *l2)
 {
-    assert(dest);
-    assert(src);
+    enum cmp {
+        less   = -1,
+        equal  = 0,
+        bigger = 1
+    };
 
-    unsigned long num_ch = 0;
-
-    while (num_ch < count && (dest[num_ch] = src[num_ch]))
-        num_ch++;
-
-    if (!src[num_ch] && count == num_ch)
-        return dest;
-
-    while (num_ch < count)
-        dest[num_ch++] = '\0';
-
-    return dest;
-}
-
-void swap (int *str1, int *str2)
-{
-    assert(str1);
-    assert(str2);
-
-    int tmp[MAX_LINE] = {};
-
-    cpy(tmp, str1, MAX_LINE);
-    cpy(str1, str2, MAX_LINE);
-    cpy(str2, tmp, MAX_LINE);
-}
-
-void swap_num (int *n1, int *n2)
-{
-    int tmp = 0; 
-
-    tmp = *n1;
-    *n1 = *n2;
-    *n2 = tmp; 
-}
-
-int is_bigger (int *str1, int *str2)
-{
-    int i = 0; 
-
-    while (i < MAX_LINE)
+    if (l1->lenth != l2->lenth)
     {
-        if (str1[i] != str2[i])
-            return str1[i] > str2[i];
-
-        i++;
-    }
-    
-    return IS_BIGGER;
-}
-
-int is_bigger_end (int *str1, int *str2)
-{
-    int i = MAX_LINE - 1;
-    int j = MAX_LINE - 1;
-
-    while (str1[i] == 0) 
-        i--;
-
-    while (str2[j] == 0) 
-        j--;
-
-    while (j >= 0 && i >= 0)
-    {
-        if (str1[i] != str2[j])
-            return str1[i] > str2[j];
-
-        i--;
-        j--;
+        if (l1->lenth > l2->lenth)
+            return bigger;
+        else 
+            return less;
     }
 
-    if (i > 0)
-        return IS_BIGGER;
+    int curr_char = l1->lenth;
+     
+    while (l1->text[curr_char] == l2->text[curr_char])
+    {
+        if (curr_char == 0)
+            return equal;
 
-    if (j > 0)
-        return IS_SMALLER;
+        curr_char--;
+    }
     
-    return IS_BIGGER;
+    if (l1->text[curr_char] > l2->text[curr_char])
+        return bigger;
+
+    return less;    
 }
 
-void sort (int **lines, int *number, int line_num, int start, const char* /* data */)
+int cmp_beg (LI *l1, LI *l2)
 {
+    int curr_char = 0;
+    enum cmp {
+        less   = -1,
+        equal  = 0,
+        bigger = 1
+    };
+     
+    while (l1->text[curr_char] == l2->text[curr_char])
+    {
+        if (l1->text[curr_char] == '\0')
+            return equal;
 
-    int (*fun[])(int *, int *) = {&is_bigger, &is_bigger_end};
+        curr_char++;
+    }
+    
+    if (l1->text[curr_char] > l2->text[curr_char])
+        return bigger;
 
-    for (int i = 0; i < line_num; ++i)
-        for (int j = i + 1; j < line_num - 1; ++j)
-            if (lines[j][0] != EOF && fun[start](lines[i], lines[j]))
-            {
-                swap(lines[i], lines[j]);
-                swap_num(&(number[i]), &(number[j]));
-            }
+    return less;    
 }
 
-void unsort (int **lines, int *number, int line_num, int /* start */, const char* /* data */)
+void swap (LI **lines, int i, int j)
 {
-    for (int i = 0; i < line_num; ++i)
-        for (int j = i + 1; j < line_num - 1; ++j)
-            if (number[j] == i)
-            {
-                swap(lines[i], lines[j]);
-                swap_num(&(number[i]), &(number[j]));
-            }
+    LI *tmp = lines[i];
+
+    lines[i] = lines[j];
+    lines[j] = tmp;
+}
+
+int partition (LI **lines, int low, int high, int (*fun) (LI* l1, LI* l2))
+{
+    LI *pivot = lines[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; ++j)
+    {
+        if (fun(lines[j], pivot) == -1)
+        {
+            i++;
+            swap(lines, i, j);
+        }
+    }
+
+    swap(lines, i + 1, high);
+
+    return i + 1;
+}
+
+void quick_sort (LI **lines, int low, int high, int (*fun) (LI* l1, LI* l2))
+{
+    if (low < high)
+    {
+        int pivot = partition(lines, low, high, fun);
+
+        quick_sort(lines, low, pivot - 1, fun);
+        quick_sort(lines, pivot + 1, high, fun);
+    }
+}
+
+void unsort (LI **lines, int number_of_lines)
+{
+    for (int curr_line = 0; curr_line < number_of_lines; ++curr_line)
+    {
+        if (lines[curr_line]->number != curr_line)
+        {
+            swap(lines, curr_line, lines[curr_line]->number);
+        }
+    }
 }

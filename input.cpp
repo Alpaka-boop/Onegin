@@ -5,7 +5,7 @@
 
 #include "Onegin.h"
 
-const int MAX_LINE = 300;
+const int MAX_LINE = 10000;
 
 int read (LI ***lines, int **buffer, int text_size)
 {
@@ -44,7 +44,7 @@ int read (LI ***lines, int **buffer, int text_size)
             assert((*lines)[curr_line_num]->text);
 
             (*lines)[curr_line_num]->number = curr_line_num;
-            (*lines)[curr_line_num]->lenth = curr_line_char;
+            (*lines)[curr_line_num]->lenth = curr_line_char + 1;
             strncpy((*lines)[curr_line_num]->text, curr_line, curr_line_char + 1);
 
             curr_line_num++;

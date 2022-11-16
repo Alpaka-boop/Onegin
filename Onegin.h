@@ -1,22 +1,20 @@
 #ifndef ONEGIN_H
 #define ONEGIN_H
 
-typedef struct LINE_INFO{
+typedef struct LINE_INFO {
     int  number;
     char *text;
     int  lenth;
-}LI;
+} LI;
 
-int  *cpy          (int *dest, const int *src, unsigned long count);
-void swap          (char *str1, char *str2);
-void swap_num      (int *n1, int *n2);
-int  read          (LI ***lines, int **buffer, int text_size, int max_number_of_lines);
-void mem_handler   (LI ***lines, int max_number_of_lines, int line_num);
-int  str_cmp       (const char *str1, const char *str2);
-int  is_bigger_end (const char *str1, const char *str2);
-void print         (char **lines, int *number, int line_num);
-void sort          (char **lines, int *number, int line_num, int start);
-void unsort        (char **lines, int *number, int line_num);
-int  lines_counter ();
+int  read       (LI ***lines, int **buffer, int text_size);
+void print      (LI **lines, int num_of_lines);
+
+void quick_sort (LI **lines, int low, int high, int (*fun) (LI* l1, LI* l2));
+void unsort     (LI **lines, int number_of_lines);
+int  partition  (LI **lines, int low, int high, int (*fun) (LI* l1, LI* l2));
+void swap       (LI **lines, int i, int j, int (*fun) (LI* l1, LI* l2));
+int  cmp_beg    (LI *l1, LI *l2);
+int  cmp_end    (LI *l1, LI *l2);
 
 #endif 
