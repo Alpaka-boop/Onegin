@@ -6,8 +6,6 @@
 
 #include "Onegin.h"
 
-#define START_FRONT 0
-#define START_BACK  1
 #define INPUT_FILE "Onegin.txt"
 
 void print (LI **lines, int num_of_lines)
@@ -55,6 +53,8 @@ int main ()
 
     int number_of_lines = read(&lines, &buffer, number_of_characters);
 
+    print(lines, number_of_lines);
+    quick_sort(lines, 0, number_of_lines - 1, cmp_beg);
     print(lines, number_of_lines);
     quick_sort(lines, 0, number_of_lines - 1, cmp_end);
     print(lines, number_of_lines);
