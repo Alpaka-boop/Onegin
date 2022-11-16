@@ -1,4 +1,4 @@
-CC = g++-11
+CC = g++
 
 TARGET = onegin
 
@@ -13,7 +13,7 @@ FLAGS = -D _DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Waggressive-loop
 	-fno-omit-frame-pointer -Wlarger-than=8192 -Wstack-usage=8192 -pie -fPIE \
 	-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-ALL   = main.cpp inout.cpp sort.cpp Onegin.h
+ALL = main.cpp input.cpp sort.cpp 
 
 all: $(ALL)
 	$(CC) $(ALL) -Wall -Wextra -o $(TARGET)
