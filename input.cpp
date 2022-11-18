@@ -7,7 +7,7 @@
 
 const int MAX_LINE = 10000;
 
-int read (LI ***lines, int **buffer, int text_size)
+int read (LI **lines, int **buffer, int text_size)
 {
     int  buf_char = 0;
     int  line_num = 0;
@@ -25,7 +25,8 @@ int read (LI ***lines, int **buffer, int text_size)
     if ((*buffer)[buf_char - 1] != '\n')
         line_num++;
 
-    *lines = (LI **) calloc(line_num, sizeof(LI *));
+    *lines = (LI *) calloc(line_num, sizeof(LI));
+    (*lines)[1].number = 1;
 
     assert(*lines);
 
@@ -37,15 +38,13 @@ int read (LI ***lines, int **buffer, int text_size)
         {
             curr_line[curr_line_char] = '\n';
 
-            (*lines)[curr_line_num] = (LI *) calloc(1, sizeof(LI));                            // Выделение памяти под итую структуру 
-            (*lines)[curr_line_num]->text = (char *) calloc(curr_line_char + 1, sizeof(char)); // Выделение памяти под строку в итой структуре 
+            (*lines)[curr_line_num].text = (char *) calloc(curr_line_char + 1, sizeof(char));
+            
+            assert((*lines)[curr_line_num].text);
 
-            assert((*lines)[curr_line_num]);
-            assert((*lines)[curr_line_num]->text);
-
-            (*lines)[curr_line_num]->number = curr_line_num;
-            (*lines)[curr_line_num]->lenth = curr_line_char + 1;
-            strncpy((*lines)[curr_line_num]->text, curr_line, curr_line_char + 1);
+            (*lines)[curr_line_num].number = curr_line_num;
+            (*lines)[curr_line_num].lenth = curr_line_char + 1;
+            strncpy((*lines)[curr_line_num].text, curr_line, curr_line_char + 1);
 
             curr_line_num++;
             

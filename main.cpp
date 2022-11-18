@@ -6,9 +6,9 @@
 
 #include "Onegin.h"
 
-#define INPUT_FILE "Onegin.txt"
+#define INPUT_FILE "TestFile.txt"
 
-void print (LI **lines, int num_of_lines)
+void print (LI *lines, int num_of_lines)
 {
     assert(lines);
 
@@ -16,32 +16,30 @@ void print (LI **lines, int num_of_lines)
     
     for (int i = 0; i < num_of_lines; i++)
     {
-        printf("%s", lines[i]->text);
+        printf("%s", lines[i].text);
     }
 
     printf("=============================\n");
 }
 
-void free_lines(LI ***lines, int number_of_lines)
+void free_lines(LI **lines, int number_of_lines)
 {
     for (int i = 0; i < number_of_lines; ++i)
     {
-        free((*lines)[i]->text);
+        free((*lines)[i].text);
     }
 
-    free(**lines);
     free(*lines);
-
 }
 
 int main ()
 {
     setlocale(LC_ALL, "Rus");
 
-    LI **lines = NULL; 
+    LI *lines = NULL; 
 
     FILE *onegin = fopen(INPUT_FILE, "r");
-    struct stat st;
+    struct stat st = {};
 
     stat(INPUT_FILE, &st);
 
