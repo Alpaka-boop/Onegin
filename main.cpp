@@ -6,7 +6,7 @@
 
 #include "Onegin.h"
 
-#define INPUT_FILE "TestFile.txt"
+#define INPUT_FILE "Onegin.txt"
 
 void print (LI *lines, int num_of_lines)
 {
@@ -38,8 +38,16 @@ int main ()
 
     LI *lines = NULL; 
 
-    FILE *onegin = fopen(INPUT_FILE, "r");
     struct stat st = {};
+    FILE *onegin = fopen(INPUT_FILE, "r");
+
+    if (!onegin)
+    {
+        printf("No such file %s\n", INPUT_FILE);
+        printf("Please, change the file name in main.cpp line -- 9\n");
+
+        return 1;
+    }
 
     stat(INPUT_FILE, &st);
 
